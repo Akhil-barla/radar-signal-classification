@@ -1,45 +1,73 @@
 # Radar Signal Classification Benchmark
 
-This project demonstrates a deep learning benchmark for classifying radar-like sequential time-series data. It evaluates three different neural network architectures on the UCI HAR Dataset to compare how effectively they capture temporal patterns.
+An end-to-end deep learning benchmark treating human activity data as continuous, radar-like temporal sequences. This project evaluates various Neural Network architectures to determine the best method for capturing temporal patterns and micro-Doppler signatures.
 
-## Project Structure
-- `radar_classification.py`: The core machine learning pipeline. It downloads the dataset, preprocesses the data, builds three models (FNN, CNN-1D, LSTM), trains them, and outputs performance metrics.
-- `radar_dashboard.html`: A static, interactive web dashboard to visualize the training histories, confusion matrices, and model comparisons.
-- `outputs/`: The directory where execution results (Loss curve charts, Confusion matrix images, and `radar_results.json`) are saved.
+---
 
-## Environment Setup
+## 📌 Dataset
+**Name:** [UCI Human Activity Recognition (HAR) Using Smartphones Data Set](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones)
 
-Ensure you have Python installed (Python 3.8+ recommended). 
-Install the required dependencies using pip:
+We leverage the 561-feature vector from the UCI HAR dataset. To simulate radar returns (such as PRF bursts tracking a target over a dwell period), the baseline flat feature array is refactored into a sequential matrix structure: `(Samples, 51 Timesteps, 11 Channels)`.
 
-```bash
-pip install numpy pandas matplotlib seaborn tensorflow scikit-learn
-```
+---
 
-## How to Run the Project
+## 🛠 Tech Stack
+- **Language:** Python 3.8+
+- **Deep Learning Framework:** TensorFlow 2.x / Keras
+- **Data Manipulation:** NumPy, Pandas, Scikit-learn
+- **Data Visualization:** Matplotlib, Seaborn
+- **Dashboard Frontend:** HTML5, CSS3 (Custom Variables/Animations), Vanilla Javascript
 
-### 1. Training the Models
-To run the deep learning pipeline from scratch:
-Open your terminal (PowerShell or Command Prompt) and run:
 
+## 🚀 Installation & Setup
+
+1. **Clone the Repository (If applicable):**
+   ```bash
+   git clone <YOUR_REPO_URL>
+   cd files
+   ```
+
+2. **Install Dependencies:**
+   Ensure you have Python installed, then run:
+   ```bash
+   pip install numpy pandas matplotlib seaborn tensorflow scikit-learn
+   ```
+
+## 🧠 How We Implemented & How It Works
+
+### Pipeline Flow:
+1. **Automated Download:** The `radar_classification.py` script automatically fetches the official UCI ZIP archive if it isn't present locally.
+2. **Preprocessing:** It extracts the dataset in memory, normalizes the inputs utilizing `StandardScaler`, and reshapes the standard 1D features into simulated 2D time-series matrices to create temporal significance.
+3. **Model Engineering:** We implemented three distinct neural network pipelines:
+    - **FNN (Feedforward Neural Network - Baseline)**: Evaluates the raw 561 features independently. Crucially lacks temporal/sequential awareness.
+    - **CNN-1D (Convolutional Network)**: Sweeps a 1D kernel across the 51 timesteps to extract local radar-pulse-like patterns.
+    - **LSTM (RNN)**: Deploys gated memory cells to track the feature evolution across the entire track dwell timeline.
+4. **Evaluation:** Models are independently trained and tested. Loss curves and normalized Confusion Matrices are pushed to the `./outputs/` directory.
+5. **JSON Injection:** An external script updates `radar_dashboard.html` dynamically by injecting the output JSON metrics directly into the static HTML for immediate viewing.
+
+
+## 📊 How To Run
+
+### 1. Execute the Training Pipeline
+Run the script manually to begin data downloading, preprocessing, and model training:
 ```bash
 py radar_classification.py
 ```
-*(Note: Use `python` instead of `py` if you are on Mac/Linux or depending on your specific Python installation).*
+*(If you are on Linux/macOS, use `python radar_classification.py` or `python3`)*
 
-**What this does:**
-1. Downloads the official UCI HAR Dataset.
-2. Preprocesses the 561-feature vectors into a 51-timestep sequence format.
-3. Compiles and trains a Feedforward Neural Network (FNN), a 1D Convolutional Neural Network (CNN), and a Long Short-Term Memory network (LSTM) for 5 epochs each.
-4. Generates performance plots and saves data to `./outputs/radar_results.json`.
+### 2. Update the Dashboard
+After training is finished to generate new local results, sync the new data to the HTML visualizer:
+```bash
+py update_dashboard.py
+```
 
-### 2. Viewing the Dashboard
-To explore the results visually:
-Simply **double-click** the `radar_dashboard.html` file to open it in your default web browser.
+### 3. View the Results
+Double-click `radar_dashboard.html` to open it in your browser. You will see:
+- Real-time testing accuracy and total parameter comparisons.
+- SVG Line charts mapping Epoch training performance.
+- Interactive tab sections explaining the algorithmic superiority behind sequence models (LSTM) for capturing Doppler evolution versus flat feature mapping (FNN).
 
-The dashboard includes:
-- Animated performance counters.
-- Loss and accuracy curves.
-- Normalised confusion matrices.
-- "Why LSTM?" architectural reasoning and parameter efficiency charts.
-- The actual Python code implementations of each model.
+
+## 📚 Reference Papers
+The dataset used in this benchmark originates from the following scholarly research:
+> Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. *"A Public Domain Dataset for Human Activity Recognition Using Smartphones."* 21th European Symposium on Artificial Neural Networks, Computational Intelligence and Machine Learning, ESANN 2013. Bruges, Belgium 24-26 April 2013.
