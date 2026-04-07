@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+UCI_HAR_Dataset.zip
+UCI_HAR_Dataset/
+*.png
+radar_results.json
+!outputs/*.png
+!outputs/radar_results.json
