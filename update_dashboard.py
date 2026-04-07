@@ -21,8 +21,8 @@ cm_str = json.dumps(data['confusion_matrices'], indent=2)
 with open('radar_dashboard.html', 'r', encoding='utf-8') as f:
     html = f.read()
 
-# Replace RESULTS block
-html = re.sub(r'const RESULTS = \[\s*\{.*?\}\s*\];', f'const RESULTS = {results_str};', html, flags=re.DOTALL)
+# Replace RESULTS block - simpler regex to match array with trailing commas
+html = re.sub(r'const RESULTS = \[.*?\];', f'const RESULTS = {results_str};', html, flags=re.DOTALL)
 # Replace HISTORIES block
 html = re.sub(r'const HISTORIES = \{.*?\};', f'const HISTORIES = {histories_str};', html, flags=re.DOTALL)
 # Replace CM_DATA block
